@@ -53,7 +53,7 @@ public class AWSHostedZoneProperties {
      */
     public AWSHostedZoneProperties(String name, String vpcList, AWSHostedZoneConfig HostedZoneConfig,
 	    AWSHostedZoneTags HostedZoneTags, AWSQueryLoggingConfig QueryLoggingConfig) {
-	this.Name = null;
+	this.Name = name;
 	this.VPCs = vpcList;
 	this.HostedZoneConfig = HostedZoneConfig;
 	this.HostedZoneTags = HostedZoneTags;
