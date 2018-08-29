@@ -25,9 +25,9 @@ import org.platform.aws.sections.sub.AWSOutput;
 import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.AWSResource;
 import org.utils.AWSUtils;
+import org.utils.MainUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
@@ -65,21 +65,24 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      * com.fasterxml.jackson.databind.SerializerProvider)
      */
     @Override
-    public void serialize(AWSTemplateCreator item, JsonGenerator jgen, SerializerProvider provider)
-	    throws IOException, JsonProcessingException {
+    public void serialize(AWSTemplateCreator item, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 	jgen.useDefaultPrettyPrinter();
 
 	// Starting JSON structure
 	jgen.writeStartObject();
 
-	// TOD Make constants with all those literals
 	// Serializing global attributes
 	jgen.writeStringField(AWSUtils.FIELD_TEMPLATE_VERSION, item.AWSTemplateFormatVersion);
 	jgen.writeStringField(AWSUtils.FIELD_TEMPLATE_DESCRIPTION, item.Description);
 
 	doParameterSerialization(item, jgen);
-	// TODO Serializing mappings section if any
-	doResourcesSerialization(item, jgen);
+	try {
+	    doResourcesSerialization(item, jgen);
+	} catch (NoSuchFieldException e) {
+	    throw new RuntimeException(e.getMessage());
+	} catch (ClassNotFoundException e) {
+	    throw new RuntimeException(e.getMessage());
+	}
 	doOutputSerialization(item, jgen);
 
 	// Ending JSON structure
@@ -91,16 +94,28 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      *
      * @param item the item
      * @param jgen the jgen
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException            Signals that an I/O exception has occurred.
+     * @throws NoSuchFieldException
+     * @throws ClassNotFoundException
      */
-    private void doResourcesSerialization(AWSTemplateCreator item, JsonGenerator jgen) throws IOException {
+    private void doResourcesSerialization(AWSTemplateCreator item, JsonGenerator jgen)
+	    throws IOException, NoSuchFieldException, ClassNotFoundException {
 	SectionResources resourcesSection = item.getResources();
 	if (resourcesSection != null && !resourcesSection.getProperties().isEmpty()) {
 	    jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_RESOURCES);
 	    for (Entry<String, AWSResource> paramEntry : resourcesSection.getProperties().entrySet()) {
 		String objectId = paramEntry.getKey();
 		AWSResource awsParam = paramEntry.getValue();
-		// TODO Check using reflection if all attributes are null, then set null
+		boolean hasMissingValues = false;
+		try {
+		    hasMissingValues = MainUtils.hasRequiredFieldsMissingValue(awsParam);
+		} catch (IllegalAccessException e) {
+		    hasMissingValues = true;
+		}
+		if (hasMissingValues) {
+		    throw new RuntimeException("Missing values");
+		}
+
 		jgen.writeObjectField(objectId, awsParam);
 	    }
 	    jgen.writeEndObject();

@@ -13,16 +13,22 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org.platform.aws.sections.sub;
+package org.platform.aws;
 
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+@Retention(RUNTIME)
+@Target(FIELD)
 /**
- * The Class AWSResourceProperties.
+ * The Interface PropertyTypeRequired.
  *
  * @author Inaki Rodriguez
+ *
  */
-public class AWSResourceProperties {
-
-    // DELETE!!!
-    // protected Class<? extends AWSResourceProperties> Properties = null;
+public @interface MandatoryPropertyType {
 
 }

@@ -25,6 +25,8 @@ import org.utils.AWSUtils;
  */
 public class AWSHostedZone extends AWSResource {
 
+    public AWSHostedZoneProperties Properties;
+
     /**
      * Instantiates a new AWS hosted zone.
      *
@@ -43,6 +45,15 @@ public class AWSHostedZone extends AWSResource {
 	    Properties = new AWSHostedZoneProperties(name, vpcList, HostedZoneConfig, HostedZoneTags,
 		    QueryLoggingConfig);
 	}
+    }
+
+    /**
+     * Gets the properties.
+     *
+     * @return the properties
+     */
+    public AWSHostedZoneProperties getProperties() {
+	return Properties;
     }
 
 }

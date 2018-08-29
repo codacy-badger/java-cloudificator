@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.platform.aws.sections.sub.resources.hostedzone;
 
-import org.platform.aws.sections.sub.AWSResourceProperties;
+import org.platform.aws.MandatoryPropertyType;
 
 /**
  * The Class AWSHostedZoneProperties.
@@ -24,10 +24,11 @@ import org.platform.aws.sections.sub.AWSResourceProperties;
  *
  * @author Inaki Rodriguez
  */
-public class AWSHostedZoneProperties extends AWSResourceProperties {
+public class AWSHostedZoneProperties {
 
     /** The Name. */
-    private String Name;
+    @MandatoryPropertyType
+    public String Name;
 
     /** The VP cs. */
     private String VPCs;
@@ -52,7 +53,7 @@ public class AWSHostedZoneProperties extends AWSResourceProperties {
      */
     public AWSHostedZoneProperties(String name, String vpcList, AWSHostedZoneConfig HostedZoneConfig,
 	    AWSHostedZoneTags HostedZoneTags, AWSQueryLoggingConfig QueryLoggingConfig) {
-	this.Name = name;
+	this.Name = null;
 	this.VPCs = vpcList;
 	this.HostedZoneConfig = HostedZoneConfig;
 	this.HostedZoneTags = HostedZoneTags;
