@@ -1,4 +1,4 @@
-package org.platform.aws.sections;
+package org.platform.aws.sections.sub;
 
 /**
  * @See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/parameters-section-structure.html#parameters-section-structure-syntax

@@ -1,4 +1,4 @@
-package org.platform.aws.sections;
+package org.platform.aws.sections.sub;
 
 // @See https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/outputs-section-structure.html
 public class AWSOutput {

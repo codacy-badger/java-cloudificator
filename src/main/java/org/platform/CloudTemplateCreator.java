@@ -9,6 +9,7 @@ public abstract class CloudTemplateCreator {
 	
 	// Make it transient to be ignored when serialization, like JSON representation
 	public transient String templateType;
+	public transient String templateFilename;
 	
 	public static final String AWS = "AWS_platform";
 	public static final String AWS_TEMPLATE_VERSION_20100909 = "2010-09-09";

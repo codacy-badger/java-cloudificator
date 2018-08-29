@@ -1,20 +1,19 @@
 package org.platform.aws;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
 
 import org.platform.CloudTemplateCreator;
+import org.platform.aws.sections.SectionConditions;
 import org.platform.aws.sections.SectionMappings;
+import org.platform.aws.sections.SectionMetadata;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
+import org.platform.aws.sections.SectionTransform;
 import org.utils.MainUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.SerializableString;
-import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -22,15 +21,18 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 
 @JsonSerialize(using = AWSSerializer.class)
-public class AWSCloudTemplateCreator extends CloudTemplateCreator {
+public class AWSTemplateCreator extends CloudTemplateCreator {
 	
 	// Global values
 	public String AWSTemplateFormatVersion;
 	public String Description;
 	
 	// Sections
+	private SectionMetadata Metadata;
 	private SectionParameters Parameters;
 	private SectionMappings Mappings;
+	private SectionConditions Conditions;
+	private SectionTransform Transform;
 	private SectionResources Resources;
 	private SectionOutputs Outputs;
 	
@@ -39,12 +41,12 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 	private transient String yamlOutput;
 	
 	// No constructors. Use factory method
-	private AWSCloudTemplateCreator() {
+	private AWSTemplateCreator() {
 		
 	}
 	
-	public static AWSCloudTemplateCreator FactoryDefault() {
-		AWSCloudTemplateCreator templateCreator = new AWSCloudTemplateCreator();
+	public static AWSTemplateCreator FactoryDefault() {
+		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
 		templateCreator.templateType = CloudTemplateCreator.AWS;
 		
 		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
@@ -52,8 +54,8 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 	    return templateCreator;
 	}
 	
-	public static AWSCloudTemplateCreator FactoryCreator(String templateDate, String templateDescription) {
-		AWSCloudTemplateCreator templateCreator = new AWSCloudTemplateCreator();
+	public static AWSTemplateCreator FactoryCreator(String templateDate, String templateDescription) {
+		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
 		templateCreator.templateType = CloudTemplateCreator.AWS;
 		
 		templateCreator.AWSTemplateFormatVersion = templateDate;
@@ -61,8 +63,8 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 	    return templateCreator;
 	}
 	
-	public static AWSCloudTemplateCreator FactoryCreatorWithDesc(String templateDescription) {
-		AWSCloudTemplateCreator templateCreator = new AWSCloudTemplateCreator();
+	public static AWSTemplateCreator FactoryCreatorWithDesc(String templateDescription) {
+		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
 		templateCreator.templateType = CloudTemplateCreator.AWS;
 		
 		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
@@ -75,22 +77,6 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 		
 	}
 
-	public void setParameters(SectionParameters templateParams) {
-		this.Parameters = templateParams;
-	}
-
-	public void setResources(SectionResources templateResources) {
-		this.Resources = templateResources;
-	}
-
-	public void setOutputs(SectionOutputs templateOutputs) {
-		this.Outputs = templateOutputs;
-	}
-	
-	public void setMappings(SectionMappings templateMapping) {
-		this.Mappings = templateMapping;
-	}
-	
 	@Override
 	public String generateTemplateJSON() {
 		try {
@@ -122,8 +108,25 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
         JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
 		ObjectMapper noQuotesMapper = new ObjectMapper(new YAMLFactory().enable(Feature.MINIMIZE_QUOTES));
 		String notRevisedString = noQuotesMapper.writeValueAsString(jsonNodeTree);
+		// FIXME This is a hack, because I have no idea how to change that behavior in objectmapper to avoid quoting when adding exclamation mark char
 		return MainUtils.getRemovedQuoteForIntrinsecFunctions(notRevisedString);
     }
+	
+	public void setParameters(SectionParameters templateParams) {
+		this.Parameters = templateParams;
+	}
+
+	public void setResources(SectionResources templateResources) {
+		this.Resources = templateResources;
+	}
+
+	public void setOutputs(SectionOutputs templateOutputs) {
+		this.Outputs = templateOutputs;
+	}
+	
+	public void setMappings(SectionMappings templateMapping) {
+		this.Mappings = templateMapping;
+	}
 
 	public SectionParameters getParameters() {
 		return Parameters;

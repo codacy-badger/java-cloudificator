@@ -1,10 +1,12 @@
 package org;
 
-import org.platform.aws.AWSCloudTemplateCreator;
-import org.platform.aws.sections.AWSOutput;
-import org.platform.aws.sections.AWSParam;
+import org.platform.aws.AWSTemplateCreator;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
+import org.platform.aws.sections.SectionResources;
+import org.platform.aws.sections.sub.AWSOutput;
+import org.platform.aws.sections.sub.AWSParam;
+import org.platform.aws.sections.sub.resources.AWSHostedZone;
 
 public class Client {
 
@@ -42,9 +44,9 @@ public class Client {
 		System.out.println("START\n");
 		
 		// Testing a simple client
-		AWSCloudTemplateCreator templateCreator = AWSCloudTemplateCreator.FactoryCreatorWithDesc("Private DNS zone");
+		AWSTemplateCreator templateCreator = AWSTemplateCreator.FactoryCreatorWithDesc("Private DNS zone");
 		
-		// We set the Parameters
+		// Setting Parameters section
 		SectionParameters sectionParams = new SectionParameters();
 		AWSParam dnsParamItem = new AWSParam();
 		dnsParamItem.setDefault("eu-central-1.dev.aws.kone.internal");
@@ -60,10 +62,13 @@ public class Client {
 		// Setting mappings section
 		templateCreator.setMappings(null);
 		
-		// We set the Resources
-		templateCreator.setResources(null);
+		// Setting Resources section
+		SectionResources sectionResources = new SectionResources();
+		AWSHostedZone hostedZone = new AWSHostedZone();
+		sectionResources.addResource("DNSZone", hostedZone);
+		templateCreator.setResources(sectionResources);
 		
-		// We set the outputs
+		// Setting outputs section
 		SectionOutputs sectionOutputs = new SectionOutputs();
 		AWSOutput outputItem = new AWSOutput();
 		outputItem.setDescription("Hosted Zone ID Output");
