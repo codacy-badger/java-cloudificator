@@ -57,6 +57,10 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
         	for(Entry<String, AWSResource> paramEntry : resourcesSection.getProperties().entrySet() ) {
         		String objectId = paramEntry.getKey();
         		AWSResource awsParam = paramEntry.getValue();
+        		if (awsParam.getProperties() == null ) {
+        			//
+        		}
+        		
         		jgen.writeObjectField(objectId, awsParam);
         	}
         	jgen.writeEndObject();

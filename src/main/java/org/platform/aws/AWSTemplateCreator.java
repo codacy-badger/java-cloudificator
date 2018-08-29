@@ -3,13 +3,10 @@ package org.platform.aws;
 import java.io.IOException;
 
 import org.platform.CloudTemplateCreator;
-import org.platform.aws.sections.SectionConditions;
 import org.platform.aws.sections.SectionMappings;
-import org.platform.aws.sections.SectionMetadata;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
-import org.platform.aws.sections.SectionTransform;
 import org.utils.MainUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -28,11 +25,11 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 	public String Description;
 	
 	// Sections
-	private SectionMetadata Metadata;
+	// TODO private SectionMetadata Metadata;
 	private SectionParameters Parameters;
 	private SectionMappings Mappings;
-	private SectionConditions Conditions;
-	private SectionTransform Transform;
+	// TODO private SectionConditions Conditions;
+	// TODO private SectionTransform Transform;
 	private SectionResources Resources;
 	private SectionOutputs Outputs;
 	
@@ -48,7 +45,6 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 	public static AWSTemplateCreator FactoryDefault() {
 		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
 		templateCreator.templateType = CloudTemplateCreator.AWS;
-		
 		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
 		templateCreator.Description = "";
 	    return templateCreator;
@@ -57,7 +53,6 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 	public static AWSTemplateCreator FactoryCreator(String templateDate, String templateDescription) {
 		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
 		templateCreator.templateType = CloudTemplateCreator.AWS;
-		
 		templateCreator.AWSTemplateFormatVersion = templateDate;
 		templateCreator.Description = templateDescription;
 	    return templateCreator;
@@ -66,7 +61,6 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 	public static AWSTemplateCreator FactoryCreatorWithDesc(String templateDescription) {
 		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
 		templateCreator.templateType = CloudTemplateCreator.AWS;
-		
 		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
 		templateCreator.Description = templateDescription;
 	    return templateCreator;

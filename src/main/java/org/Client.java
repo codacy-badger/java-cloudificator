@@ -9,36 +9,6 @@ import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.resources.AWSHostedZone;
 
 public class Client {
-
-	/*
-	 * 
-	 * Generate the following YAML
-	 * 
-	 *	AWSTemplateFormatVersion: 2010-09-09
-		Description: Private DNS zone
-		Parameters:
-		  dnszone:
-		    Description: Private DNS zone name
-		    Default: eu-central-1.dev.aws.kone.internal
-		    Type: String
-		  vpclist:
-		    Description: List of associated VPC Id's
-		    Type: List<AWS::EC2::VPC::Id>
-		Resources:
-		  DNSZone:
-		    Type: "AWS::Route53::HostedZone"
-		    Properties:
-		      HostedZoneConfig:
-		        Comment: Private DNS zone
-		      Name: !Ref dnszone
-		      VPCs: !Ref vpclist
-		Outputs:
-		  HostedZoneIdOutput:
-		    Description: Hosted Zone ID Output
-		    Value: !Ref DNSZone
-	 * 
-	 * 
-	 * */
 	
 	public static void main(String[] args) {
 		System.out.println("START\n");
@@ -49,7 +19,7 @@ public class Client {
 		// Setting Parameters section
 		SectionParameters sectionParams = new SectionParameters();
 		AWSParam dnsParamItem = new AWSParam();
-		dnsParamItem.setDefault("eu-central-1.dev.aws.kone.internal");
+		dnsParamItem.setDefault("eu-central-1.dev.aws.test");
 		dnsParamItem.setDescription("Private DNS zone name");
 		sectionParams.addParam("dnszone", dnsParamItem);
 		
@@ -64,7 +34,7 @@ public class Client {
 		
 		// Setting Resources section
 		SectionResources sectionResources = new SectionResources();
-		AWSHostedZone hostedZone = new AWSHostedZone();
+		AWSHostedZone hostedZone = new AWSHostedZone("!Ref dnszone", "!Ref vpclist");
 		sectionResources.addResource("DNSZone", hostedZone);
 		templateCreator.setResources(sectionResources);
 		
@@ -78,8 +48,8 @@ public class Client {
 		
 		// Generate templates
 		String template;
-		template = templateCreator.generateTemplateJSON();
-		System.out.println("JSON Template generated -> \n" + template);
+		//template = templateCreator.generateTemplateJSON();
+		//System.out.println("JSON Template generated -> \n" + template);
 		
 		template = templateCreator.generateTemplateYAML();
 		System.out.println("\nYAML Template generated -> \n" + template);
