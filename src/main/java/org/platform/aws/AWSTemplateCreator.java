@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2018
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
 package org.platform.aws;
 
 import java.io.IOException;
@@ -21,155 +36,286 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 
+/**
+ * The Class AWSTemplateCreator.
+ *
+ * @author Inaki Rodriguez
+ */
 @JsonSerialize(using = AWSSerializer.class)
 public class AWSTemplateCreator extends CloudTemplateCreator {
 
-	// Global values
-	public String AWSTemplateFormatVersion;
-	public String Description;
-	
-	// Sections
-	// TODO private SectionMetadata Metadata;
-	private SectionParameters Parameters;
-	private SectionMappings Mappings;
-	// TODO private SectionConditions Conditions;
-	// TODO private SectionTransform Transform;
-	private SectionResources Resources;
-	private SectionOutputs Outputs;
-	
-	// Output streams
-	private transient String jsonOutput;
-	private transient String yamlOutput;
-	
-	// No constructors. Use factory method
-	private AWSTemplateCreator() {
-		
-	}
-	
-	public static AWSTemplateCreator FactoryDefault() {
-		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
-		templateCreator.templateType = CloudTemplateCreator.AWS;
-		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
-		templateCreator.Description = "";
-	    return templateCreator;
-	}
-	
-	public static AWSTemplateCreator FactoryCreator(String templateDate, String templateDescription) {
-		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
-		templateCreator.templateType = CloudTemplateCreator.AWS;
-		templateCreator.AWSTemplateFormatVersion = templateDate;
-		templateCreator.Description = templateDescription;
-	    return templateCreator;
-	}
-	
-	public static AWSTemplateCreator FactoryCreatorWithDesc(String templateDescription) {
-		AWSTemplateCreator templateCreator = new AWSTemplateCreator();
-		templateCreator.templateType = CloudTemplateCreator.AWS;
-		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
-		templateCreator.Description = templateDescription;
-	    return templateCreator;
-	}
+    /** The AWS template format version. */
+    // Global values
+    public String AWSTemplateFormatVersion;
 
-	@Override
-	public void createTemplate() {
-		
-	}
+    /** The Description. */
+    public String Description;
 
-	@Override
-	public String generateTemplateJSON() {
-		try {
-			ObjectMapper objectMapper = new ObjectMapper();			
-			objectMapper.setPropertyNamingStrategy(new FirstInitialUpperNamingStrategy());			
-			objectMapper.setSerializationInclusion(Include.NON_NULL);
-			this.jsonOutput = objectMapper.writeValueAsString(this);
-			return jsonOutput;
-		} catch (JsonProcessingException e) {
-		}
-		return null;
-	}
+    // Sections
+    /** The Parameters. */
+    // TODO private SectionMetadata Metadata;
+    private SectionParameters Parameters;
 
-	@Override
-	public String generateTemplateYAML() {
-		if(this.jsonOutput == null) {
-			generateTemplateJSON();
-		}
-		try {
-			this.yamlOutput = asYaml(this.jsonOutput);
-			return this.yamlOutput;
-		} catch (JsonProcessingException e) {
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
-	}
+    /** The Mappings. */
+    private SectionMappings Mappings;
+    // TODO private SectionConditions Conditions;
+    /** The Resources. */
+    // TODO private SectionTransform Transform;
+    private SectionResources Resources;
 
-	private String asYaml(String jsonString) throws JsonProcessingException, IOException {
-        JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
-		ObjectMapper noQuotesMapper = new ObjectMapper(new YAMLFactory().enable(Feature.MINIMIZE_QUOTES));
-		String notRevisedString = noQuotesMapper.writeValueAsString(jsonNodeTree);
-		// FIXME This is a hack, because I have no idea how to change that behavior in objectmapper to avoid quoting when adding exclamation mark char
-		return MainUtils.getRemovedQuoteForIntrinsecFunctions(notRevisedString);
+    /** The Outputs. */
+    private SectionOutputs Outputs;
+
+    /** The json output. */
+    // Output streams
+    private transient String jsonOutput;
+
+    /** The yaml output. */
+    private transient String yamlOutput;
+
+    /**
+     * Instantiates a new AWS template creator.
+     */
+    // No constructors. Use factory method
+    private AWSTemplateCreator() {
+
     }
-	
-	public void setParameters(SectionParameters templateParams) {
-		this.Parameters = templateParams;
-	}
 
-	public void setResources(SectionResources templateResources) {
-		this.Resources = templateResources;
-	}
+    /**
+     * Factory default.
+     *
+     * @return the AWS template creator
+     */
+    public static AWSTemplateCreator FactoryDefault() {
+	AWSTemplateCreator templateCreator = new AWSTemplateCreator();
+	templateCreator.templateType = CloudTemplateCreator.AWS;
+	templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
+	templateCreator.Description = "";
+	return templateCreator;
+    }
 
-	public void setOutputs(SectionOutputs templateOutputs) {
-		this.Outputs = templateOutputs;
-	}
-	
-	public void setMappings(SectionMappings templateMapping) {
-		this.Mappings = templateMapping;
-	}
+    /**
+     * Factory creator.
+     *
+     * @param templateDate        the template date
+     * @param templateDescription the template description
+     * @return the AWS template creator
+     */
+    public static AWSTemplateCreator FactoryCreator(String templateDate, String templateDescription) {
+	AWSTemplateCreator templateCreator = new AWSTemplateCreator();
+	templateCreator.templateType = CloudTemplateCreator.AWS;
+	templateCreator.AWSTemplateFormatVersion = templateDate;
+	templateCreator.Description = templateDescription;
+	return templateCreator;
+    }
 
-	public SectionParameters getParameters() {
-		return Parameters;
-	}
+    /**
+     * Factory creator with desc.
+     *
+     * @param templateDescription the template description
+     * @return the AWS template creator
+     */
+    public static AWSTemplateCreator FactoryCreatorWithDesc(String templateDescription) {
+	AWSTemplateCreator templateCreator = new AWSTemplateCreator();
+	templateCreator.templateType = CloudTemplateCreator.AWS;
+	templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
+	templateCreator.Description = templateDescription;
+	return templateCreator;
+    }
 
-	public SectionMappings getMappings() {
-		return Mappings;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.platform.CloudTemplateCreator#createTemplate()
+     */
+    @Override
+    public void createTemplate() {
 
-	public SectionResources getResources() {
-		return Resources;
-	}
+    }
 
-	public SectionOutputs getOutputs() {
-		return Outputs;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.platform.CloudTemplateCreator#generateTemplateJSON()
+     */
+    @Override
+    public String generateTemplateJSON() {
+	try {
+	    ObjectMapper objectMapper = new ObjectMapper();
+	    objectMapper.setPropertyNamingStrategy(new FirstInitialUpperNamingStrategy());
+	    objectMapper.setSerializationInclusion(Include.NON_NULL);
+	    this.jsonOutput = objectMapper.writeValueAsString(this);
+	    return jsonOutput;
+	} catch (JsonProcessingException e) {
 	}
-	
-	/**
-	 * Naming strategy needed to keep initial char on upper case mode
-	 * @author inakirodriguez
-	 *
+	return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.platform.CloudTemplateCreator#generateTemplateYAML()
+     */
+    @Override
+    public String generateTemplateYAML() {
+	if (this.jsonOutput == null) {
+	    generateTemplateJSON();
+	}
+	try {
+	    this.yamlOutput = asYaml(this.jsonOutput);
+	    return this.yamlOutput;
+	} catch (JsonProcessingException e) {
+	    return null;
+	} catch (IOException e) {
+	    return null;
+	}
+    }
+
+    /**
+     * As yaml.
+     *
+     * @param jsonString the json string
+     * @return the string
+     * @throws JsonProcessingException the json processing exception
+     * @throws IOException             Signals that an I/O exception has occurred.
+     */
+    private String asYaml(String jsonString) throws JsonProcessingException, IOException {
+	JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
+	ObjectMapper noQuotesMapper = new ObjectMapper(new YAMLFactory().enable(Feature.MINIMIZE_QUOTES));
+	String notRevisedString = noQuotesMapper.writeValueAsString(jsonNodeTree);
+	// FIXME This is a hack, because I have no idea how to change that behavior in
+	// objectmapper to avoid quoting when adding exclamation mark char
+	return MainUtils.getRemovedQuoteForIntrinsecFunctions(notRevisedString);
+    }
+
+    /**
+     * Sets the parameters.
+     *
+     * @param templateParams the new parameters
+     */
+    public void setParameters(SectionParameters templateParams) {
+	this.Parameters = templateParams;
+    }
+
+    /**
+     * Sets the resources.
+     *
+     * @param templateResources the new resources
+     */
+    public void setResources(SectionResources templateResources) {
+	this.Resources = templateResources;
+    }
+
+    /**
+     * Sets the outputs.
+     *
+     * @param templateOutputs the new outputs
+     */
+    public void setOutputs(SectionOutputs templateOutputs) {
+	this.Outputs = templateOutputs;
+    }
+
+    /**
+     * Sets the mappings.
+     *
+     * @param templateMapping the new mappings
+     */
+    public void setMappings(SectionMappings templateMapping) {
+	this.Mappings = templateMapping;
+    }
+
+    /**
+     * Gets the parameters.
+     *
+     * @return the parameters
+     */
+    public SectionParameters getParameters() {
+	return Parameters;
+    }
+
+    /**
+     * Gets the mappings.
+     *
+     * @return the mappings
+     */
+    public SectionMappings getMappings() {
+	return Mappings;
+    }
+
+    /**
+     * Gets the resources.
+     *
+     * @return the resources
+     */
+    public SectionResources getResources() {
+	return Resources;
+    }
+
+    /**
+     * Gets the outputs.
+     *
+     * @return the outputs
+     */
+    public SectionOutputs getOutputs() {
+	return Outputs;
+    }
+
+    /**
+     * Naming strategy needed to keep initial char on upper case mode.
+     *
+     * @author inakirodriguez
+     */
+    @SuppressWarnings("serial")
+    public class FirstInitialUpperNamingStrategy extends PropertyNamingStrategy {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.fasterxml.jackson.databind.PropertyNamingStrategy#nameForField(com.
+	 * fasterxml.jackson.databind.cfg.MapperConfig,
+	 * com.fasterxml.jackson.databind.introspect.AnnotatedField, java.lang.String)
 	 */
-	@SuppressWarnings("serial")
-	public class FirstInitialUpperNamingStrategy extends PropertyNamingStrategy {
-		
-		@Override
-	    public String nameForField(MapperConfig<?> config, AnnotatedField field, String defaultName) {
-	        return convert(field.getName());
-	    }
-
-	    @Override
-	    public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
-	        return convert(method.getName().toString());
-	    }
-
-	    @Override
-	    public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
-	        return convert(method.getName().toString());
-	    }
-
-	    private String convert(String input) {
-	        return input.substring(3);
-	    }
-
+	@Override
+	public String nameForField(MapperConfig<?> config, AnnotatedField field, String defaultName) {
+	    return convert(field.getName());
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.fasterxml.jackson.databind.PropertyNamingStrategy#nameForGetterMethod(com
+	 * .fasterxml.jackson.databind.cfg.MapperConfig,
+	 * com.fasterxml.jackson.databind.introspect.AnnotatedMethod, java.lang.String)
+	 */
+	@Override
+	public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
+	    return convert(method.getName().toString());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.fasterxml.jackson.databind.PropertyNamingStrategy#nameForSetterMethod(com
+	 * .fasterxml.jackson.databind.cfg.MapperConfig,
+	 * com.fasterxml.jackson.databind.introspect.AnnotatedMethod, java.lang.String)
+	 */
+	@Override
+	public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
+	    return convert(method.getName().toString());
+	}
+
+	/**
+	 * Convert.
+	 *
+	 * @param input the input
+	 * @return the string
+	 */
+	private String convert(String input) {
+	    return input.substring(3);
+	}
+
+    }
 
 }
