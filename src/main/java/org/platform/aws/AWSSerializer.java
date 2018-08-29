@@ -9,6 +9,7 @@ import org.platform.aws.sections.SectionResources;
 import org.platform.aws.sections.sub.AWSOutput;
 import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.AWSResource;
+import org.utils.AWSUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,8 +38,8 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
         
     	// TODO Make constants with all those literals
         // Serializing global attributes
-        jgen.writeStringField("AWSTemplateFormatVersion", item.AWSTemplateFormatVersion );
-        jgen.writeStringField("Description", item.Description);
+        jgen.writeStringField(AWSUtils.FIELD_TEMPLATE_VERSION, item.AWSTemplateFormatVersion );
+        jgen.writeStringField(AWSUtils.FIELD_TEMPLATE_DESCRIPTION, item.Description);
         
         doParameterSerialization(item, jgen);
         // TODO Serializing mappings section if any
@@ -53,14 +54,10 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
 	private void doResourcesSerialization(AWSTemplateCreator item, JsonGenerator jgen) throws IOException {
 		SectionResources resourcesSection = item.getResources();
 		if(resourcesSection != null && !resourcesSection.getProperties().isEmpty() ) {
-        	jgen.writeObjectFieldStart("Resources");
+        	jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_RESOURCES);
         	for(Entry<String, AWSResource> paramEntry : resourcesSection.getProperties().entrySet() ) {
         		String objectId = paramEntry.getKey();
         		AWSResource awsParam = paramEntry.getValue();
-        		if (awsParam.getProperties() == null ) {
-        			//
-        		}
-        		
         		jgen.writeObjectField(objectId, awsParam);
         	}
         	jgen.writeEndObject();
@@ -71,7 +68,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
 		// Serializing output section if any
         SectionOutputs outputSection = item.getOutputs();
         if(outputSection != null && !outputSection.getProperties().isEmpty() ) {
-        	jgen.writeObjectFieldStart("Outputs");
+        	jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_OUTPUTS);
         	for(Entry<String, AWSOutput> paramEntry : outputSection.getProperties().entrySet() ) {
         		String objectId = paramEntry.getKey();
         		AWSOutput awsParam = paramEntry.getValue();
@@ -84,7 +81,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
 	private void doParameterSerialization(AWSTemplateCreator item, JsonGenerator jgen) throws IOException {
 		SectionParameters paramSection = item.getParameters();
         if(paramSection != null && !paramSection.getProperties().isEmpty() ) {
-        	jgen.writeObjectFieldStart("Parameters");
+        	jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_PARAMETERS);
         	for(Entry<String, AWSParam> paramEntry : paramSection.getProperties().entrySet() ) {
         		String objectId = paramEntry.getKey();
         		AWSParam awsParam = paramEntry.getValue();

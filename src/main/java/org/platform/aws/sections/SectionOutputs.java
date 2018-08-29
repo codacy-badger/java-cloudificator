@@ -12,8 +12,8 @@ public class SectionOutputs {
 		values = new HashMap<>();
 	}
 	
-	public void addOutput(String paramName, AWSOutput paramItem) {
-		values.put(paramName, paramItem);
+	public void addOutput(String outputName, AWSOutput outputItem) {
+		values.put(outputName, outputItem);
 	}
 
 	public HashMap<String, AWSOutput> getProperties() {

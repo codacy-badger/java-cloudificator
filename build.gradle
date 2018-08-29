@@ -27,7 +27,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     
     // Compilation libraries
-    // Generate JSO*N representation
+    // Generate JSON representation
     implementation 'com.google.code.gson:gson:2.8.5'
     // Generate YAML representation
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.6'
@@ -36,3 +36,7 @@ dependencies {
     
 }
 
+// TODO Make a task that check the URL:
+// https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+// Starting with following resource "AWS::Route53::HostedZone"
+// Checkout "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html"

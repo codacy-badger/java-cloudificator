@@ -13,13 +13,17 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotatedField;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 
 @JsonSerialize(using = AWSSerializer.class)
 public class AWSTemplateCreator extends CloudTemplateCreator {
-	
+
 	// Global values
 	public String AWSTemplateFormatVersion;
 	public String Description;
@@ -74,7 +78,8 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 	@Override
 	public String generateTemplateJSON() {
 		try {
-			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectMapper objectMapper = new ObjectMapper();			
+			objectMapper.setPropertyNamingStrategy(new FirstInitialUpperNamingStrategy());			
 			objectMapper.setSerializationInclusion(Include.NON_NULL);
 			this.jsonOutput = objectMapper.writeValueAsString(this);
 			return jsonOutput;
@@ -136,6 +141,35 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
 	public SectionOutputs getOutputs() {
 		return Outputs;
+	}
+	
+	/**
+	 * Naming strategy needed to keep initial char on upper case mode
+	 * @author inakirodriguez
+	 *
+	 */
+	@SuppressWarnings("serial")
+	public class FirstInitialUpperNamingStrategy extends PropertyNamingStrategy {
+		
+		@Override
+	    public String nameForField(MapperConfig<?> config, AnnotatedField field, String defaultName) {
+	        return convert(field.getName());
+	    }
+
+	    @Override
+	    public String nameForGetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
+	        return convert(method.getName().toString());
+	    }
+
+	    @Override
+	    public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method, String defaultName) {
+	        return convert(method.getName().toString());
+	    }
+
+	    private String convert(String input) {
+	        return input.substring(3);
+	    }
+
 	}
 
 }

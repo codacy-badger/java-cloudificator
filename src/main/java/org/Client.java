@@ -1,17 +1,20 @@
 package org;
 
+import java.util.Date;
+
 import org.platform.aws.AWSTemplateCreator;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
 import org.platform.aws.sections.sub.AWSOutput;
 import org.platform.aws.sections.sub.AWSParam;
-import org.platform.aws.sections.sub.resources.AWSHostedZone;
+import org.platform.aws.sections.sub.resources.hostedzone.AWSHostedZone;
 
 public class Client {
 	
 	public static void main(String[] args) {
-		System.out.println("START\n");
+		long dateStartInMillis = new Date().getTime();
+		// System.out.println("START");
 		
 		// Testing a simple client
 		AWSTemplateCreator templateCreator = AWSTemplateCreator.FactoryCreatorWithDesc("Private DNS zone");
@@ -26,7 +29,7 @@ public class Client {
 		AWSParam vpcParamItem = new AWSParam();
 		vpcParamItem.setDescription("List of associated VPC Id's");
 		vpcParamItem.setType("List<AWS::EC2::VPC::Id>");
-		sectionParams.addParam("vpclist", vpcParamItem);
+		sectionParams.addParam("vpcList", vpcParamItem);
 		templateCreator.setParameters(sectionParams);
 		
 		// Setting mappings section
@@ -34,7 +37,7 @@ public class Client {
 		
 		// Setting Resources section
 		SectionResources sectionResources = new SectionResources();
-		AWSHostedZone hostedZone = new AWSHostedZone("!Ref dnszone", "!Ref vpclist");
+		AWSHostedZone hostedZone = new AWSHostedZone("!Ref dnszone", "!Ref vpcList");
 		sectionResources.addResource("DNSZone", hostedZone);
 		templateCreator.setResources(sectionResources);
 		
@@ -48,13 +51,14 @@ public class Client {
 		
 		// Generate templates
 		String template;
-		//template = templateCreator.generateTemplateJSON();
+		template = templateCreator.generateTemplateJSON();
 		//System.out.println("JSON Template generated -> \n" + template);
 		
 		template = templateCreator.generateTemplateYAML();
 		System.out.println("\nYAML Template generated -> \n" + template);
 		
-		System.out.println("END");
+		long totalTime = new Date().getTime()-dateStartInMillis;
+		System.out.println("Done in " + totalTime + " millisecs.");
 
 	}
 
