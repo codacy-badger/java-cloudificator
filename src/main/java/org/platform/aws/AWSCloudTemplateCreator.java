@@ -1,27 +1,44 @@
 package org.platform.aws;
 
 import java.io.IOException;
-import java.util.List;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 import org.platform.CloudTemplateCreator;
+import org.platform.aws.sections.SectionMappings;
+import org.platform.aws.sections.SectionOutputs;
+import org.platform.aws.sections.SectionParameters;
+import org.platform.aws.sections.SectionResources;
+import org.utils.MainUtils;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.SerializableString;
+import com.fasterxml.jackson.core.io.CharacterEscapes;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
 
+@JsonSerialize(using = AWSSerializer.class)
 public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 	
-	@SuppressWarnings("unused")
-	private String AWSTemplateFormatVersion;
-	@SuppressWarnings("unused")
-	private String Description;
+	// Global values
+	public String AWSTemplateFormatVersion;
+	public String Description;
+	
+	// Sections
+	private SectionParameters Parameters;
+	private SectionMappings Mappings;
+	private SectionResources Resources;
+	private SectionOutputs Outputs;
+	
+	// Output streams
 	private transient String jsonOutput;
 	private transient String yamlOutput;
 	
-	// No constructors. Use factory
+	// No constructors. Use factory method
 	private AWSCloudTemplateCreator() {
 		
 	}
@@ -32,7 +49,6 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 		
 		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
 		templateCreator.Description = "";
-		cleanMaps();
 	    return templateCreator;
 	}
 	
@@ -42,7 +58,6 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 		
 		templateCreator.AWSTemplateFormatVersion = templateDate;
 		templateCreator.Description = templateDescription;
-		cleanMaps();
 	    return templateCreator;
 	}
 	
@@ -52,13 +67,7 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 		
 		templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
 		templateCreator.Description = templateDescription;
-		cleanMaps();
 	    return templateCreator;
-	}
-	
-
-	private static void cleanMaps() {
-		
 	}
 
 	@Override
@@ -66,25 +75,32 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 		
 	}
 
-	public void setParameters(List<AWSParameters> templateParams) {
-		
+	public void setParameters(SectionParameters templateParams) {
+		this.Parameters = templateParams;
 	}
 
-	public void setResources(List<AWSResources> templateResources) {
-		
+	public void setResources(SectionResources templateResources) {
+		this.Resources = templateResources;
 	}
 
-	public void setOutputs(List<AWSOutputs> templateOutputs) {
-		
+	public void setOutputs(SectionOutputs templateOutputs) {
+		this.Outputs = templateOutputs;
 	}
-
+	
+	public void setMappings(SectionMappings templateMapping) {
+		this.Mappings = templateMapping;
+	}
+	
 	@Override
 	public String generateTemplateJSON() {
-		// Taking the map item and rendering as a YAML representation
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		this.jsonOutput = gson.toJson(this);
-		
-		return jsonOutput;
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.setSerializationInclusion(Include.NON_NULL);
+			this.jsonOutput = objectMapper.writeValueAsString(this);
+			return jsonOutput;
+		} catch (JsonProcessingException e) {
+		}
+		return null;
 	}
 
 	@Override
@@ -101,13 +117,28 @@ public class AWSCloudTemplateCreator extends CloudTemplateCreator {
 			return null;
 		}
 	}
-	
-	public String asYaml(String jsonString) throws JsonProcessingException, IOException {
-        // parse JSON
+
+	private String asYaml(String jsonString) throws JsonProcessingException, IOException {
         JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
-        // save it as YAML
-        String jsonAsYaml = new YAMLMapper().writeValueAsString(jsonNodeTree);
-        return jsonAsYaml;
+		ObjectMapper noQuotesMapper = new ObjectMapper(new YAMLFactory().enable(Feature.MINIMIZE_QUOTES));
+		String notRevisedString = noQuotesMapper.writeValueAsString(jsonNodeTree);
+		return MainUtils.getRemovedQuoteForIntrinsecFunctions(notRevisedString);
     }
+
+	public SectionParameters getParameters() {
+		return Parameters;
+	}
+
+	public SectionMappings getMappings() {
+		return Mappings;
+	}
+
+	public SectionResources getResources() {
+		return Resources;
+	}
+
+	public SectionOutputs getOutputs() {
+		return Outputs;
+	}
 
 }
