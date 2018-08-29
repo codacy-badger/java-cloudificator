@@ -39,7 +39,6 @@ public class Client {
      */
     public static void main(String[] args) {
 	long dateStartInMillis = new Date().getTime();
-	// System.out.println("START");
 
 	// Testing a simple client
 	AWSTemplateCreator templateCreator = AWSTemplateCreator.FactoryCreatorWithDesc("Private DNS zone");
@@ -62,7 +61,7 @@ public class Client {
 
 	// Setting Resources section
 	SectionResources sectionResources = new SectionResources();
-	AWSHostedZone hostedZone = new AWSHostedZone("!Ref dnszone", "!Ref vpcList");
+	AWSHostedZone hostedZone = new AWSHostedZone("!Ref dnszone", "!Ref vpcList", null, null, null);
 	sectionResources.addResource("DNSZone", hostedZone);
 	templateCreator.setResources(sectionResources);
 
@@ -70,7 +69,7 @@ public class Client {
 	SectionOutputs sectionOutputs = new SectionOutputs();
 	AWSOutput outputItem = new AWSOutput();
 	outputItem.setDescription("Hosted Zone ID Output");
-	outputItem.setValue("!Ref DNSZone"); // FIXME This value is always quoted!!
+	outputItem.setValue("!Ref DNSZone");
 	sectionOutputs.addOutput("HostedZoneIdOutput", outputItem);
 	templateCreator.setOutputs(sectionOutputs);
 

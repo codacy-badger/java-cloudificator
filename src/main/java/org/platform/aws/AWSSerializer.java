@@ -58,7 +58,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * com.fasterxml.jackson.databind.ser.std.StdSerializer#serialize(java.lang.
      * Object, com.fasterxml.jackson.core.JsonGenerator,
@@ -100,6 +100,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
 	    for (Entry<String, AWSResource> paramEntry : resourcesSection.getProperties().entrySet()) {
 		String objectId = paramEntry.getKey();
 		AWSResource awsParam = paramEntry.getValue();
+		// TODO Check using reflection if all attributes are null, then set null
 		jgen.writeObjectField(objectId, awsParam);
 	    }
 	    jgen.writeEndObject();
