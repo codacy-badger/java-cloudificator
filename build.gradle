@@ -29,12 +29,21 @@ dependencies {
     // Compilation libraries
     // Generate JSON representation
     implementation 'com.google.code.gson:gson:2.8.5'
+    
     // Generate YAML representation
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.6'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.6'
 	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.6'
     
 }
+
+// REMEMBER
+// git rm -r --cached File-or-FolderName
+// git commit -m "Removed folder from repository"
+// git push origin master
+
+// TODO
+// Set the test phase
 
 // TODO TASK Make a task that check the URL:
 // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
@@ -47,8 +56,6 @@ dependencies {
 // Create a java class at package "org.platform.aws.resources" with class name AWSResource_NAME
 // Each Class should have the same fields described as Properties and javadoc comments with that documentation
 
-// TODO TASK
-// Run JUnit test cases that validate output templates
 
 // TODO TASK
 // Create AsciiDoctor documentation from markdown source file

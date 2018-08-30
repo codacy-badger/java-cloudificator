@@ -1,0 +1,31 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: Private DNS zone
+Parameters:
+  vpcList:
+    Type: List<AWS::EC2::VPC::Id>
+    Description: List of associated VPC Id's
+  dnszone:
+    Default: eu-central-1.dev.aws.test
+    Type: String
+    Description: Private DNS zone name
+Mappings:
+  RegionMap:
+    london:
+      id: val
+    us-east-1:
+      id1: val1
+      id2: val2
+Resources:
+  DNSZone:
+    Properties:
+      Name: !Ref dnszone
+      VPCs: !Ref vpcList
+    Type: AWS::Route53::HostedZone
+Conditions:
+  condition_B: !Equals [ !Ref EnvType, prod ]
+  condition_A: !Equals [ !Ref EnvType, prod ]
+Outputs:
+  HostedZoneIdOutput:
+    Value: !Ref DNSZone
+    Description: Hosted Zone ID Output

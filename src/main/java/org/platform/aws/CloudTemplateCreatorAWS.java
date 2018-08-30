@@ -56,6 +56,7 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     /** The Parameters. */
     private SectionParameters Parameters;
 
+    /** The Mappings. */
     private SectionMapping Mappings;
 
     /** The Resources. */
@@ -64,6 +65,7 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     /** The Outputs. */
     private SectionOutputs Outputs;
 
+    /** The Conditions. */
     private SectionConditions Conditions;
 
     /** The json output. */
@@ -199,6 +201,8 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     }
 
     /**
+     * Gets the mappings.
+     *
      * @return the mappings
      */
     public SectionMapping getMappings() {
@@ -206,6 +210,8 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     }
 
     /**
+     * Sets the mappings.
+     *
      * @param mappings the mappings to set
      */
     public void setMappings(SectionMapping mappings) {
@@ -231,6 +237,8 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     }
 
     /**
+     * Gets the conditions.
+     *
      * @return the conditions
      */
     public SectionConditions getConditions() {
@@ -238,6 +246,8 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     }
 
     /**
+     * Sets the conditions.
+     *
      * @param conditions the conditions to set
      */
     public void setConditions(SectionConditions conditions) {

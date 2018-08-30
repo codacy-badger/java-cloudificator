@@ -13,10 +13,16 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package org;
+package aws;
 
-import java.util.Date;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.junit.Test;
 import org.platform.aws.CloudTemplateCreatorAWS;
 import org.platform.aws.sections.SectionConditions;
 import org.platform.aws.sections.SectionMapping;
@@ -29,32 +35,60 @@ import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.resources.hostedzone.AWSHostedZone;
 
 /**
- * The Class Client.
+ * The Class TemplateTest.
  *
  * @author Inaki Rodriguez
  */
-public class Client {
+public class TemplateTest {
+
+    /** The path filename json. */
+    private String pathFilenameJson = "./src/test/resources/TemplateExample.json";
+
+    /** The path filename yaml. */
+    private String pathFilenameYaml = "./src/test/resources/TemplateExample.yaml";
 
     /**
-     * The main method.
-     *
-     * @param args the arguments
+     * Test JSON template.
      */
-    public static void main(String[] args) {
-	long dateStartInMillis = new Date().getTime();
-
+    @Test
+    public void testJSONTemplate() {
 	// Testing a simple client
 	CloudTemplateCreatorAWS templateCreator = CloudTemplateCreatorAWS.FactoryCreatorWithDesc("Private DNS zone");
+	setTemplateData(templateCreator);
+	String jsonContentActual = templateCreator.generateTemplateJSON();
+	String jsonContentExpected;
+	try {
+	    jsonContentExpected = new String(Files.readAllBytes(Paths.get(pathFilenameJson)));
+	    assertEquals("Testing the generated Json content", jsonContentExpected, jsonContentActual);
+	} catch (IOException e) {
+	    fail("There was an error checking the Test template file " + e.getMessage());
+	}
+    }
 
-	// *****************************************************************
+    /**
+     * Test YAML template.
+     */
+    @Test
+    public void testYAMLTemplate() {
+	// Testing a simple client
+	CloudTemplateCreatorAWS templateCreator = CloudTemplateCreatorAWS.FactoryCreatorWithDesc("Private DNS zone");
+	setTemplateData(templateCreator);
+	String jsonContentActual = templateCreator.generateTemplateYAML();
+	String jsonContentExpected;
+	try {
+	    jsonContentExpected = new String(Files.readAllBytes(Paths.get(pathFilenameYaml)));
+	    assertEquals("Testing the generated Yaml content", jsonContentExpected, jsonContentActual);
+	} catch (IOException e) {
+	    fail("There was an error checking the Test template file " + e.getMessage());
+	}
+    }
 
-	// Template Anatomy
-	// @see
-	// https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
-
-	// TODO
-	// Setting METADATA section.
-
+    /**
+     * Sets the template data.
+     *
+     * @param templateCreator the new template data
+     */
+    private void setTemplateData(CloudTemplateCreatorAWS templateCreator) {
 	// Setting PARAMETERS section
 	SectionParameters sectionParams = new SectionParameters();
 	AWSParam dnsParamItem = new AWSParam();
@@ -93,30 +127,6 @@ public class Client {
 	outputItem.setValue("!Ref DNSZone");
 	sectionOutputs.addOutput("HostedZoneIdOutput", outputItem);
 	templateCreator.setOutputs(sectionOutputs);
-
-	// TODO
-	// Setting TRANSFORM section. Let's check how this work exactly
-
-	// *****************************************************************
-	// Generate templates
-	String template;
-	// template = templateCreator.generateTemplateJSON();
-	// System.out.println("JSON Template generated -> \n" + template);
-
-	template = templateCreator.generateTemplateYAML();
-	System.out.println("\nYAML Template generated -> \n" + template);
-
-	// Show execution time formatted in seconds
-	long totalTime = new Date().getTime() - dateStartInMillis;
-	String timeInString = String.valueOf(totalTime);
-	if (timeInString.length() > 3) {
-	    timeInString = timeInString.substring(0, timeInString.length() - 3) + "."
-		    + timeInString.substring(timeInString.length() - 3);
-	} else {
-	    timeInString = "0." + timeInString;
-	}
-	// System.out.println("Done in " + timeInString + " seconds.");
-
     }
 
 }
