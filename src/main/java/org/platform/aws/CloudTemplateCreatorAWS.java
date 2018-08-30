@@ -18,6 +18,7 @@ package org.platform.aws;
 import java.io.IOException;
 
 import org.platform.CloudTemplateCreator;
+import org.platform.aws.sections.SectionConditions;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
@@ -59,6 +60,8 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
 
     /** The Outputs. */
     private SectionOutputs Outputs;
+
+    private SectionConditions Conditions;
 
     /** The json output. */
     // Output streams
@@ -207,6 +210,20 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
      */
     public void setOutputs(SectionOutputs templateOutputs) {
 	this.Outputs = templateOutputs;
+    }
+
+    /**
+     * @return the conditions
+     */
+    public SectionConditions getConditions() {
+	return Conditions;
+    }
+
+    /**
+     * @param conditions the conditions to set
+     */
+    public void setConditions(SectionConditions conditions) {
+	Conditions = conditions;
     }
 
     /**

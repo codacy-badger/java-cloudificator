@@ -18,6 +18,7 @@ package org;
 import java.util.Date;
 
 import org.platform.aws.CloudTemplateCreatorAWS;
+import org.platform.aws.sections.SectionConditions;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
@@ -65,6 +66,12 @@ public class Client {
 	sectionResources.addResource("DNSZone", hostedZone);
 	templateCreator.setResources(sectionResources);
 
+	// Setting Conditions section
+	SectionConditions sectionConditions = new SectionConditions();
+	sectionConditions.addCondition("condition_B", "!Equals [ !Ref EnvType, prod ]");
+	sectionConditions.addCondition("condition_A", "!Equals [ !Ref EnvType, prod ]");
+	templateCreator.setConditions(sectionConditions);
+
 	// Setting outputs section
 	SectionOutputs sectionOutputs = new SectionOutputs();
 	AWSOutput outputItem = new AWSOutput();
@@ -81,8 +88,16 @@ public class Client {
 	template = templateCreator.generateTemplateYAML();
 	System.out.println("\nYAML Template generated -> \n" + template);
 
+	// Show execution time formatted in seconds
 	long totalTime = new Date().getTime() - dateStartInMillis;
-	System.out.println("Done in " + totalTime + " millisecs.");
+	String timeInString = String.valueOf(totalTime);
+	if (timeInString.length() > 3) {
+	    timeInString = timeInString.substring(0, timeInString.length() - 3) + "."
+		    + timeInString.substring(timeInString.length() - 3);
+	} else {
+	    timeInString = "0." + timeInString;
+	}
+	System.out.println("Done in " + timeInString + " seconds.");
 
     }
 

@@ -18,6 +18,7 @@ package org.platform.aws;
 import java.io.IOException;
 import java.util.Map.Entry;
 
+import org.platform.aws.sections.SectionConditions;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
@@ -64,7 +65,8 @@ public class AWSSerializer extends StdSerializer<CloudTemplateCreatorAWS> {
      * com.fasterxml.jackson.databind.SerializerProvider)
      */
     @Override
-    public void serialize(CloudTemplateCreatorAWS item, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+    public void serialize(CloudTemplateCreatorAWS item, JsonGenerator jgen, SerializerProvider provider)
+	    throws IOException {
 	jgen.useDefaultPrettyPrinter();
 
 	// Starting JSON structure
@@ -76,6 +78,7 @@ public class AWSSerializer extends StdSerializer<CloudTemplateCreatorAWS> {
 
 	doParameterSerialization(item, jgen);
 	doResourcesSerialization(item, jgen);
+	doConditionsSerialization(item, jgen);
 	doOutputSerialization(item, jgen);
 
 	// Ending JSON structure
@@ -138,6 +141,26 @@ public class AWSSerializer extends StdSerializer<CloudTemplateCreatorAWS> {
 		String objectId = paramEntry.getKey();
 		AWSParam awsParam = paramEntry.getValue();
 		jgen.writeObjectField(objectId, awsParam);
+	    }
+	    jgen.writeEndObject();
+	}
+    }
+
+    /**
+     * Do conditions serialization.
+     *
+     * @param item the item
+     * @param jgen the jgen
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private void doConditionsSerialization(CloudTemplateCreatorAWS item, JsonGenerator jgen) throws IOException {
+	SectionConditions conditionsSection = item.getConditions();
+	if (conditionsSection != null && !conditionsSection.getProperties().isEmpty()) {
+	    jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_CONDITIONS);
+	    for (Entry<String, String> paramEntry : conditionsSection.getProperties().entrySet()) {
+		String objectId = paramEntry.getKey();
+		String intrinsicFunction = paramEntry.getValue();
+		jgen.writeStringField(objectId, intrinsicFunction);
 	    }
 	    jgen.writeEndObject();
 	}

@@ -40,6 +40,8 @@ public final class AWSUtils {
     /** The Constant FIELD_TEMPLATE_SECTION_PARAMETERS. */
     public static final String FIELD_TEMPLATE_SECTION_PARAMETERS = "Parameters";
 
+    public static final String FIELD_TEMPLATE_SECTION_CONDITIONS = "Conditions";
+
     /** The Constant RESOURCE_TYPE_HOSTED_ZONE. */
     public static final String RESOURCE_TYPE_HOSTED_ZONE = "AWS::Route53::HostedZone";
 
