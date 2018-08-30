@@ -51,6 +51,10 @@ public class Client {
 	// Template Anatomy
 	// @see
 	// https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
+
+	// TODO
+	// Setting METADATA section.
+
 	// Setting PARAMETERS section
 	SectionParameters sectionParams = new SectionParameters();
 	AWSParam dnsParamItem = new AWSParam();
@@ -89,6 +93,9 @@ public class Client {
 	outputItem.setValue("!Ref DNSZone");
 	sectionOutputs.addOutput("HostedZoneIdOutput", outputItem);
 	templateCreator.setOutputs(sectionOutputs);
+
+	// TODO
+	// Setting TRANSFORM section. Let's check how this work exactly
 
 	// *****************************************************************
 	// Generate templates

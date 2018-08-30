@@ -36,7 +36,20 @@ dependencies {
     
 }
 
-// TODO Make a task that check the URL:
+// TODO TASK Make a task that check the URL:
 // https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
 // Starting with following resource "AWS::Route53::HostedZone"
 // Checkout "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html"
+
+// TODO TASK
+// From URL, obtain all doc links
+// For each doc link, the following:
+// Create a java class at package "org.platform.aws.resources" with class name AWSResource_NAME
+// Each Class should have the same fields described as Properties and javadoc comments with that documentation
+
+// TODO TASK
+// Run JUnit test cases that validate output templates
+
+// TODO TASK
+// Create AsciiDoctor documentation from markdown source file
+// Create README.md file from Java lib with documentation links, etc...
