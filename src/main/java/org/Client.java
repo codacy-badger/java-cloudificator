@@ -43,6 +43,9 @@ public class Client {
 	// Testing a simple client
 	CloudTemplateCreatorAWS templateCreator = CloudTemplateCreatorAWS.FactoryCreatorWithDesc("Private DNS zone");
 
+	// Template Anatomy
+	// @see
+	// https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
 	// Setting Parameters section
 	SectionParameters sectionParams = new SectionParameters();
 	AWSParam dnsParamItem = new AWSParam();
@@ -55,9 +58,6 @@ public class Client {
 	vpcParamItem.setType("List<AWS::EC2::VPC::Id>");
 	sectionParams.addParam("vpcList", vpcParamItem);
 	templateCreator.setParameters(sectionParams);
-
-	// Setting mappings section
-	templateCreator.setMappings(null);
 
 	// Setting Resources section
 	SectionResources sectionResources = new SectionResources();

@@ -18,7 +18,6 @@ package org.platform.aws;
 import java.io.IOException;
 
 import org.platform.CloudTemplateCreator;
-import org.platform.aws.sections.SectionMappings;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
@@ -51,16 +50,11 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     /** The Description. */
     public String Description;
 
-    // Sections
+    // SECTIONS
     /** The Parameters. */
-    // TODO private SectionMetadata Metadata;
     private SectionParameters Parameters;
 
-    /** The Mappings. */
-    private SectionMappings Mappings;
-    // TODO private SectionConditions Conditions;
     /** The Resources. */
-    // TODO private SectionTransform Transform;
     private SectionResources Resources;
 
     /** The Outputs. */
@@ -216,30 +210,12 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     }
 
     /**
-     * Sets the mappings.
-     *
-     * @param templateMapping the new mappings
-     */
-    public void setMappings(SectionMappings templateMapping) {
-	this.Mappings = templateMapping;
-    }
-
-    /**
      * Gets the parameters.
      *
      * @return the parameters
      */
     public SectionParameters getParameters() {
 	return Parameters;
-    }
-
-    /**
-     * Gets the mappings.
-     *
-     * @return the mappings
-     */
-    public SectionMappings getMappings() {
-	return Mappings;
     }
 
     /**

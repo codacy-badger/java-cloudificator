@@ -25,9 +25,6 @@ public class AWSResource {
     /** The Type. */
     protected String Type = null;
 
-    /** The Properties. */
-    // protected Class<? extends AWSResourceProperties> Properties = null;
-
     /**
      * Gets the type.
      *
@@ -36,14 +33,5 @@ public class AWSResource {
     public String getType() {
 	return Type;
     }
-
-    /**
-     * Gets the properties.
-     *
-     * @return the properties
-     */
-//    public Class<? extends AWSResourceProperties> getProperties() {
-//	return Properties;
-//    }
 
 }
