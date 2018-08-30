@@ -2,3 +2,7 @@
 /.gradle/
 .gradle/4.3/fileHashes/fileHashes.lock
 .gradle/4.3/fileHashes/fileHashes.bin
+/.classpath
+/build/
+/bin/
+/.settings/
