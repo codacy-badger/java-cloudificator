@@ -25,7 +25,6 @@ import org.platform.aws.sections.sub.AWSOutput;
 import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.AWSResource;
 import org.utils.AWSUtils;
-import org.utils.MainUtils;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -38,7 +37,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
  *
  */
 @SuppressWarnings("serial")
-public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
+public class AWSSerializer extends StdSerializer<CloudTemplateCreatorAWS> {
 
     /**
      * Instantiates a new AWS serializer.
@@ -52,7 +51,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      *
      * @param t the t
      */
-    public AWSSerializer(Class<AWSTemplateCreator> t) {
+    public AWSSerializer(Class<CloudTemplateCreatorAWS> t) {
 	super(t);
     }
 
@@ -65,7 +64,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      * com.fasterxml.jackson.databind.SerializerProvider)
      */
     @Override
-    public void serialize(AWSTemplateCreator item, JsonGenerator jgen, SerializerProvider provider) throws IOException {
+    public void serialize(CloudTemplateCreatorAWS item, JsonGenerator jgen, SerializerProvider provider) throws IOException {
 	jgen.useDefaultPrettyPrinter();
 
 	// Starting JSON structure
@@ -76,13 +75,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
 	jgen.writeStringField(AWSUtils.FIELD_TEMPLATE_DESCRIPTION, item.Description);
 
 	doParameterSerialization(item, jgen);
-	try {
-	    doResourcesSerialization(item, jgen);
-	} catch (NoSuchFieldException e) {
-	    throw new RuntimeException(e.getMessage());
-	} catch (ClassNotFoundException e) {
-	    throw new RuntimeException(e.getMessage());
-	}
+	doResourcesSerialization(item, jgen);
 	doOutputSerialization(item, jgen);
 
 	// Ending JSON structure
@@ -94,28 +87,15 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      *
      * @param item the item
      * @param jgen the jgen
-     * @throws IOException            Signals that an I/O exception has occurred.
-     * @throws NoSuchFieldException
-     * @throws ClassNotFoundException
+     * @throws IOException Signals that an I/O exception has occurred.
      */
-    private void doResourcesSerialization(AWSTemplateCreator item, JsonGenerator jgen)
-	    throws IOException, NoSuchFieldException, ClassNotFoundException {
+    private void doResourcesSerialization(CloudTemplateCreatorAWS item, JsonGenerator jgen) throws IOException {
 	SectionResources resourcesSection = item.getResources();
 	if (resourcesSection != null && !resourcesSection.getProperties().isEmpty()) {
 	    jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_RESOURCES);
 	    for (Entry<String, AWSResource> paramEntry : resourcesSection.getProperties().entrySet()) {
 		String objectId = paramEntry.getKey();
 		AWSResource awsParam = paramEntry.getValue();
-		boolean hasMissingValues = false;
-		try {
-		    hasMissingValues = MainUtils.hasRequiredFieldsMissingValue(awsParam);
-		} catch (IllegalAccessException e) {
-		    hasMissingValues = true;
-		}
-		if (hasMissingValues) {
-		    throw new RuntimeException("Missing values");
-		}
-
 		jgen.writeObjectField(objectId, awsParam);
 	    }
 	    jgen.writeEndObject();
@@ -129,7 +109,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      * @param jgen the jgen
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    private void doOutputSerialization(AWSTemplateCreator item, JsonGenerator jgen) throws IOException {
+    private void doOutputSerialization(CloudTemplateCreatorAWS item, JsonGenerator jgen) throws IOException {
 	// Serializing output section if any
 	SectionOutputs outputSection = item.getOutputs();
 	if (outputSection != null && !outputSection.getProperties().isEmpty()) {
@@ -150,7 +130,7 @@ public class AWSSerializer extends StdSerializer<AWSTemplateCreator> {
      * @param jgen the jgen
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    private void doParameterSerialization(AWSTemplateCreator item, JsonGenerator jgen) throws IOException {
+    private void doParameterSerialization(CloudTemplateCreatorAWS item, JsonGenerator jgen) throws IOException {
 	SectionParameters paramSection = item.getParameters();
 	if (paramSection != null && !paramSection.getProperties().isEmpty()) {
 	    jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_PARAMETERS);

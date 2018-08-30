@@ -17,7 +17,7 @@ package org;
 
 import java.util.Date;
 
-import org.platform.aws.AWSTemplateCreator;
+import org.platform.aws.CloudTemplateCreatorAWS;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
@@ -41,7 +41,7 @@ public class Client {
 	long dateStartInMillis = new Date().getTime();
 
 	// Testing a simple client
-	AWSTemplateCreator templateCreator = AWSTemplateCreator.FactoryCreatorWithDesc("Private DNS zone");
+	CloudTemplateCreatorAWS templateCreator = CloudTemplateCreatorAWS.FactoryCreatorWithDesc("Private DNS zone");
 
 	// Setting Parameters section
 	SectionParameters sectionParams = new SectionParameters();

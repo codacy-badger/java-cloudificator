@@ -25,7 +25,7 @@ import org.utils.AWSUtils;
  */
 public class AWSHostedZone extends AWSResource {
 
-    public AWSHostedZoneProperties Properties;
+    private AWSHostedZoneProperties Properties;
 
     /**
      * Instantiates a new AWS hosted zone.

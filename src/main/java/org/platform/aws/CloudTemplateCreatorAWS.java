@@ -42,7 +42,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator.Feature;
  * @author Inaki Rodriguez
  */
 @JsonSerialize(using = AWSSerializer.class)
-public class AWSTemplateCreator extends CloudTemplateCreator {
+public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
 
     /** The AWS template format version. */
     // Global values
@@ -77,7 +77,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
      * Instantiates a new AWS template creator.
      */
     // No constructors. Use factory method
-    private AWSTemplateCreator() {
+    private CloudTemplateCreatorAWS() {
 
     }
 
@@ -86,8 +86,8 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
      *
      * @return the AWS template creator
      */
-    public static AWSTemplateCreator FactoryDefault() {
-	AWSTemplateCreator templateCreator = new AWSTemplateCreator();
+    public static CloudTemplateCreatorAWS FactoryDefault() {
+	CloudTemplateCreatorAWS templateCreator = new CloudTemplateCreatorAWS();
 	templateCreator.templateType = CloudTemplateCreator.AWS;
 	templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
 	templateCreator.Description = "";
@@ -101,8 +101,8 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
      * @param templateDescription the template description
      * @return the AWS template creator
      */
-    public static AWSTemplateCreator FactoryCreator(String templateDate, String templateDescription) {
-	AWSTemplateCreator templateCreator = new AWSTemplateCreator();
+    public static CloudTemplateCreatorAWS FactoryCreator(String templateDate, String templateDescription) {
+	CloudTemplateCreatorAWS templateCreator = new CloudTemplateCreatorAWS();
 	templateCreator.templateType = CloudTemplateCreator.AWS;
 	templateCreator.AWSTemplateFormatVersion = templateDate;
 	templateCreator.Description = templateDescription;
@@ -115,8 +115,8 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
      * @param templateDescription the template description
      * @return the AWS template creator
      */
-    public static AWSTemplateCreator FactoryCreatorWithDesc(String templateDescription) {
-	AWSTemplateCreator templateCreator = new AWSTemplateCreator();
+    public static CloudTemplateCreatorAWS FactoryCreatorWithDesc(String templateDescription) {
+	CloudTemplateCreatorAWS templateCreator = new CloudTemplateCreatorAWS();
 	templateCreator.templateType = CloudTemplateCreator.AWS;
 	templateCreator.AWSTemplateFormatVersion = CloudTemplateCreator.AWS_TEMPLATE_VERSION_20100909;
 	templateCreator.Description = templateDescription;
@@ -125,7 +125,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.platform.CloudTemplateCreator#createTemplate()
      */
     @Override
@@ -135,7 +135,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.platform.CloudTemplateCreator#generateTemplateJSON()
      */
     @Override
@@ -153,7 +153,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.platform.CloudTemplateCreator#generateTemplateYAML()
      */
     @Override
@@ -270,7 +270,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see com.fasterxml.jackson.databind.PropertyNamingStrategy#nameForField(com.
 	 * fasterxml.jackson.databind.cfg.MapperConfig,
 	 * com.fasterxml.jackson.databind.introspect.AnnotatedField, java.lang.String)
@@ -282,7 +282,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.fasterxml.jackson.databind.PropertyNamingStrategy#nameForGetterMethod(com
 	 * .fasterxml.jackson.databind.cfg.MapperConfig,
@@ -295,7 +295,7 @@ public class AWSTemplateCreator extends CloudTemplateCreator {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * com.fasterxml.jackson.databind.PropertyNamingStrategy#nameForSetterMethod(com
 	 * .fasterxml.jackson.databind.cfg.MapperConfig,

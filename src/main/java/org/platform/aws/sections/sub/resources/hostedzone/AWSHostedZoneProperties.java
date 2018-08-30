@@ -28,7 +28,7 @@ public class AWSHostedZoneProperties {
 
     /** The Name. */
     @MandatoryPropertyType
-    public String Name;
+    private String Name;
 
     /** The VP cs. */
     private String VPCs;
