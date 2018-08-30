@@ -19,9 +19,11 @@ import java.util.Date;
 
 import org.platform.aws.CloudTemplateCreatorAWS;
 import org.platform.aws.sections.SectionConditions;
+import org.platform.aws.sections.SectionMapping;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
+import org.platform.aws.sections.sub.AWSMappingKey;
 import org.platform.aws.sections.sub.AWSOutput;
 import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.resources.hostedzone.AWSHostedZone;
@@ -44,35 +46,43 @@ public class Client {
 	// Testing a simple client
 	CloudTemplateCreatorAWS templateCreator = CloudTemplateCreatorAWS.FactoryCreatorWithDesc("Private DNS zone");
 
+	// *****************************************************************
+
 	// Template Anatomy
 	// @see
 	// https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-anatomy.html
-	// Setting Parameters section
+	// Setting PARAMETERS section
 	SectionParameters sectionParams = new SectionParameters();
 	AWSParam dnsParamItem = new AWSParam();
 	dnsParamItem.setDefault("eu-central-1.dev.aws.test");
 	dnsParamItem.setDescription("Private DNS zone name");
 	sectionParams.addParam("dnszone", dnsParamItem);
-
 	AWSParam vpcParamItem = new AWSParam();
 	vpcParamItem.setDescription("List of associated VPC Id's");
 	vpcParamItem.setType("List<AWS::EC2::VPC::Id>");
 	sectionParams.addParam("vpcList", vpcParamItem);
 	templateCreator.setParameters(sectionParams);
 
-	// Setting Resources section
+	// Setting MAPPINGS section
+	SectionMapping sectionMapping = new SectionMapping();
+	sectionMapping.addMapping("RegionMap", "us-east-1", new AWSMappingKey("id1", "val1"));
+	sectionMapping.addMapping("RegionMap", "us-east-1", new AWSMappingKey("id2", "val2"));
+	sectionMapping.addMapping("RegionMap", "london", new AWSMappingKey("id", "val"));
+	templateCreator.setMappings(sectionMapping);
+
+	// Setting RESOURCES section
 	SectionResources sectionResources = new SectionResources();
 	AWSHostedZone hostedZone = new AWSHostedZone("!Ref dnszone", "!Ref vpcList", null, null, null);
 	sectionResources.addResource("DNSZone", hostedZone);
 	templateCreator.setResources(sectionResources);
 
-	// Setting Conditions section
+	// Setting CONDITIONS section
 	SectionConditions sectionConditions = new SectionConditions();
 	sectionConditions.addCondition("condition_B", "!Equals [ !Ref EnvType, prod ]");
 	sectionConditions.addCondition("condition_A", "!Equals [ !Ref EnvType, prod ]");
 	templateCreator.setConditions(sectionConditions);
 
-	// Setting outputs section
+	// Setting OUTPUTS section
 	SectionOutputs sectionOutputs = new SectionOutputs();
 	AWSOutput outputItem = new AWSOutput();
 	outputItem.setDescription("Hosted Zone ID Output");
@@ -80,10 +90,11 @@ public class Client {
 	sectionOutputs.addOutput("HostedZoneIdOutput", outputItem);
 	templateCreator.setOutputs(sectionOutputs);
 
+	// *****************************************************************
 	// Generate templates
 	String template;
 	template = templateCreator.generateTemplateJSON();
-	// System.out.println("JSON Template generated -> \n" + template);
+	System.out.println("JSON Template generated -> \n" + template);
 
 	template = templateCreator.generateTemplateYAML();
 	System.out.println("\nYAML Template generated -> \n" + template);

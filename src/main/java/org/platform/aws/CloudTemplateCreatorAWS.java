@@ -19,6 +19,7 @@ import java.io.IOException;
 
 import org.platform.CloudTemplateCreator;
 import org.platform.aws.sections.SectionConditions;
+import org.platform.aws.sections.SectionMapping;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
@@ -54,6 +55,8 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
     // SECTIONS
     /** The Parameters. */
     private SectionParameters Parameters;
+
+    private SectionMapping Mappings;
 
     /** The Resources. */
     private SectionResources Resources;
@@ -180,6 +183,7 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
 	JsonNode jsonNodeTree = new ObjectMapper().readTree(jsonString);
 	ObjectMapper noQuotesMapper = new ObjectMapper(new YAMLFactory().enable(Feature.MINIMIZE_QUOTES));
 	String notRevisedString = noQuotesMapper.writeValueAsString(jsonNodeTree);
+	// String notRevisedString = noQuotesMapper.writeValueAsString(jsonString);
 	// FIXME This is a hack, because I have no idea how to change that behavior in
 	// objectmapper to avoid quoting when adding exclamation mark char
 	return MainUtils.getRemovedQuoteForIntrinsecFunctions(notRevisedString);
@@ -192,6 +196,20 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
      */
     public void setParameters(SectionParameters templateParams) {
 	this.Parameters = templateParams;
+    }
+
+    /**
+     * @return the mappings
+     */
+    public SectionMapping getMappings() {
+	return Mappings;
+    }
+
+    /**
+     * @param mappings the mappings to set
+     */
+    public void setMappings(SectionMapping mappings) {
+	Mappings = mappings;
     }
 
     /**

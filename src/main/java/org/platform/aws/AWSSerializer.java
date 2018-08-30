@@ -16,12 +16,16 @@
 package org.platform.aws;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.platform.aws.sections.SectionConditions;
+import org.platform.aws.sections.SectionMapping;
 import org.platform.aws.sections.SectionOutputs;
 import org.platform.aws.sections.SectionParameters;
 import org.platform.aws.sections.SectionResources;
+import org.platform.aws.sections.sub.AWSMappingKey;
 import org.platform.aws.sections.sub.AWSOutput;
 import org.platform.aws.sections.sub.AWSParam;
 import org.platform.aws.sections.sub.AWSResource;
@@ -34,7 +38,7 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 /**
  * The Class AWSSerializer.
  *
- * @author inakirodriguez
+ * @author Inaki Rodriguez
  *
  */
 @SuppressWarnings("serial")
@@ -77,6 +81,7 @@ public class AWSSerializer extends StdSerializer<CloudTemplateCreatorAWS> {
 	jgen.writeStringField(AWSUtils.FIELD_TEMPLATE_DESCRIPTION, item.Description);
 
 	doParameterSerialization(item, jgen);
+	doMappingSerializer(item, jgen);
 	doResourcesSerialization(item, jgen);
 	doConditionsSerialization(item, jgen);
 	doOutputSerialization(item, jgen);
@@ -141,6 +146,35 @@ public class AWSSerializer extends StdSerializer<CloudTemplateCreatorAWS> {
 		String objectId = paramEntry.getKey();
 		AWSParam awsParam = paramEntry.getValue();
 		jgen.writeObjectField(objectId, awsParam);
+	    }
+	    jgen.writeEndObject();
+	}
+    }
+
+    /**
+     * Do mapping serializer.
+     *
+     * @param item the item
+     * @param jgen the jgen
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
+    private void doMappingSerializer(CloudTemplateCreatorAWS item, JsonGenerator jgen) throws IOException {
+	SectionMapping mappingSection = item.getMappings();
+	if (mappingSection != null && !mappingSection.getProperties().isEmpty()) {
+	    jgen.writeObjectFieldStart(AWSUtils.FIELD_TEMPLATE_SECTION_MAPPINGS);
+	    for (Entry<String, HashMap<String, List<AWSMappingKey>>> mappingEntry : mappingSection.getProperties()
+		    .entrySet()) {
+		String mappingId = mappingEntry.getKey();
+		jgen.writeObjectFieldStart(mappingId);
+		HashMap<String, List<AWSMappingKey>> keyPair = mappingEntry.getValue();
+		for (Entry<String, List<AWSMappingKey>> entry : keyPair.entrySet()) {
+		    jgen.writeObjectFieldStart(entry.getKey()); // SubMappingId
+		    for (AWSMappingKey keyPairList : entry.getValue()) {
+			jgen.writeStringField(keyPairList.getKeyPairId(), keyPairList.getKeyPairValue());
+		    }
+		    jgen.writeEndObject();
+		}
+		jgen.writeEndObject();
 	    }
 	    jgen.writeEndObject();
 	}

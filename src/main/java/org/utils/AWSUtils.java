@@ -22,6 +22,9 @@ package org.utils;
  */
 public final class AWSUtils {
 
+    /**
+     * Instantiates a new AWS utils.
+     */
     private AWSUtils() {
     }
 
@@ -40,6 +43,10 @@ public final class AWSUtils {
     /** The Constant FIELD_TEMPLATE_SECTION_PARAMETERS. */
     public static final String FIELD_TEMPLATE_SECTION_PARAMETERS = "Parameters";
 
+    /** The Constant FIELD_TEMPLATE_SECTION_MAPPINGS. */
+    public static final String FIELD_TEMPLATE_SECTION_MAPPINGS = "Mappings";
+
+    /** The Constant FIELD_TEMPLATE_SECTION_CONDITIONS. */
     public static final String FIELD_TEMPLATE_SECTION_CONDITIONS = "Conditions";
 
     /** The Constant RESOURCE_TYPE_HOSTED_ZONE. */
