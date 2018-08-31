@@ -59,7 +59,14 @@ public class TemplateTest {
 	String jsonContentExpected;
 	try {
 	    jsonContentExpected = new String(Files.readAllBytes(Paths.get(pathFilenameJson)));
+	    System.out.println("****************************************************************");
+	    System.out.println("jsonContentExpected " + jsonContentExpected);
+	    System.out.println("****************************************************************");
+	    System.out.println("jsonContentActual " + jsonContentActual);
+	    System.out.println("****************************************************************");
 	    boolean areEquals = jsonContentExpected.equals(jsonContentActual);
+	    System.out.println("****************************************************************");
+	    System.out.println("areEquals -> " + areEquals);
 	    assertTrue("Testing the generated Json content", areEquals);
 	} catch (IOException e) {
 	    fail("There was an error checking the Test template file " + e.getMessage());
