@@ -1,6 +1,6 @@
 language: java
 sudo: false
 dist: precise
-jdk:	jdk:
+jdk:
   - openjdk7
 script: gradle test --debug
