@@ -9,6 +9,10 @@
 // Apply the java-library plugin to add support for Java Library
 apply plugin: 'java-library'
 
+// Global variables
+def path = 'https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/'
+def mainurl = path + 'aws-template-resource-type-ref.html'
+
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use jcenter for resolving your dependencies.
@@ -34,29 +38,71 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.6'
 	compile 'com.fasterxml.jackson.core:jackson-databind:2.8.6'
 	compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.6'
+	
+	// HTML Parser
+	compile group: 'org.jsoup', name: 'jsoup', version: '1.11.3'
     
 }
 
+// Task to generate the source classes needed to map all sort of AWS resources
+// To run "gradle generateAwsSources"
+task generateAwsSources(type:Exec) {
+		group 'Generate Source Libraries'
+    	description 'Task to generate the source classes needed to map all sort of AWS resources'
+    
+        println '== Generating source files... =='
+        workingDir '.'
+        // commandLine '/usr/bin/curl', '-s', mainurl
+        
+        // curl -s https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html | hxselect .highlights | hxselect a > data
+        commandLine "/bin/bash", "-c", "/usr/bin/curl -s " + mainurl + " | hxselect .highlights | hxselect -s '\n' a"
+        
+        standardOutput = new ByteArrayOutputStream()
+        doLast {
+			println '== Getting Links =='
+		    
+		    // Create a tempLinks folder to store all temporary doc files
+		    project.file('tempLinks').mkdirs()
+		    
+		    // Create a temp file to store temporary all links
+		    def tempFileVar = new File("$projectDir/tempLinks/allLinks.txt")
+		    tempFileVar.text = standardOutput
+    		
+    		// Read line by line and call a subtask createClasses. It creates a file for each and saves html content
+		    tempFileVar.eachLine { String line ->
+		    	if(line.size() > 0 && line.indexOf('href=') > 0){
+		    		def linkValue = line.substring(line.indexOf('href=')+6, line.indexOf('">'))
+		    		if(line.size() > 0 && line.indexOf('">')+2 > 0 && line.indexOf('</a>') > 0){
+		    			//def docFilename = line.substring(line.indexOf('">')+2, line.indexOf('</a>'))
+			    		//docFilename = docFilename.replaceAll('AWS', '');
+			    		//docFilename = docFilename.replaceAll('::', '');
+			    		//docFilename = "$projectDir/tempLinks/" + docFilename;
+						
+						// Get html documentation
+						def subProc = ""
+						subProc  = "/usr/local/bin/wget -q -P $projectDir/tempLinks/ ${path}${linkValue}".execute();
+		    			subProc.waitFor();
+		    			println "Downloading... ${linkValue}"
+		    			
+		    			// Create java class
+		    			// println "Creating file -> ${docFilename}"
+		    			// def docFile = new File(docFilename)
+		    			// docFile.text = proc.in.text
+		    		}
+		    	}
+			}
+
+		    println '== Done =='
+		}
+}
+
+// NOTES...
 // REMEMBER
 // git rm -r --cached File-or-FolderName
 // git commit -m "Removed folder from repository"
 // git push origin master
 
-// TODO
-// Set the test phase
 
-// TODO TASK Make a task that check the URL:
-// https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
-// Starting with following resource "AWS::Route53::HostedZone"
-// Checkout "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-route53-hostedzone.html"
-
-// TODO TASK
-// From URL, obtain all doc links
-// For each doc link, the following:
-// Create a java class at package "org.platform.aws.resources" with class name AWSResource_NAME
-// Each Class should have the same fields described as Properties and javadoc comments with that documentation
-
-
-// TODO TASK
+// TODO Documentation TASK
 // Create AsciiDoctor documentation from markdown source file
 // Create README.md file from Java lib with documentation links, etc...
