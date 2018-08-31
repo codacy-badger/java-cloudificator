@@ -15,7 +15,7 @@
  ******************************************************************************/
 package aws;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -59,7 +59,8 @@ public class TemplateTest {
 	String jsonContentExpected;
 	try {
 	    jsonContentExpected = new String(Files.readAllBytes(Paths.get(pathFilenameJson)));
-	    assertEquals("Testing the generated Json content", jsonContentExpected, jsonContentActual);
+	    boolean areEquals = jsonContentExpected.equals(jsonContentActual);
+	    assertTrue("Testing the generated Json content", areEquals);
 	} catch (IOException e) {
 	    fail("There was an error checking the Test template file " + e.getMessage());
 	}
@@ -73,11 +74,12 @@ public class TemplateTest {
 	// Testing a simple client
 	CloudTemplateCreatorAWS templateCreator = CloudTemplateCreatorAWS.FactoryCreatorWithDesc("Private DNS zone");
 	setTemplateData(templateCreator);
-	String jsonContentActual = templateCreator.generateTemplateYAML();
-	String jsonContentExpected;
+	String yamlContentActual = templateCreator.generateTemplateYAML();
+	String yamlContentExpected;
 	try {
-	    jsonContentExpected = new String(Files.readAllBytes(Paths.get(pathFilenameYaml)));
-	    assertEquals("Testing the generated Yaml content", jsonContentExpected, jsonContentActual);
+	    yamlContentExpected = new String(Files.readAllBytes(Paths.get(pathFilenameYaml)));
+	    boolean areEquals = yamlContentExpected.equals(yamlContentActual);
+	    assertTrue("Testing the generated Yaml content", areEquals);
 	} catch (IOException e) {
 	    fail("There was an error checking the Test template file " + e.getMessage());
 	}
