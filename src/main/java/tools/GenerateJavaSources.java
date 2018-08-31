@@ -44,9 +44,6 @@ import org.jsoup.select.Elements;
  */
 public class GenerateJavaSources {
 
-    /** The Constant URL. */
-    private static final String URL = "https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/";
-
     /** The Constant GENERATE_SOURCES_PATH. */
     private static final String GENERATE_SOURCES_PATH = "./src/main/java/org/platform/aws/resources/";
 
@@ -136,7 +133,7 @@ public class GenerateJavaSources {
 		 * aws-properties-waitconditionhandle.html
 		 * @formatter:on
 		 */
-		if (f.getName().contains(".html") && !f.getName().equals("aws-resource-dms-replicationinstance")) {
+		if (f.getName().contains(".html")) {
 		    String docName = f.getName();
 		    // System.out.println("file -> " + f.getName());
 		    try {
@@ -165,12 +162,15 @@ public class GenerateJavaSources {
     private static void createJavaClass(File input) throws IOException {
 	Document doc = Jsoup.parse(input, "UTF-8", "http://example.com/");
 	if (doc != null) {
+	    String javaFileName = setCamelCase(input.getName().replace(".html", ".java"));
+	    if ("AwsResourceDmsReplicationinstance.java".equals(javaFileName)) {
+		return;
+	    }
 	    Element docData = doc.select(".variablelist").select("dl").first();
 	    List<String> awsResourceFields = getAWSResourceProperties(docData.select("dt"));
 	    Map<String, Map<String, String>> fieldDescriptions = getFieldDescriptions(awsResourceFields,
 		    docData.select("dd"));
 	    // Create Java file
-	    String javaFileName = setCamelCase(input.getName().replace(".html", ".java"));
 	    String content = generateSourceContent(javaFileName.replace(".java", ""), fieldDescriptions);
 	    Files.write(Paths.get(GENERATE_SOURCES_PATH + javaFileName), content.getBytes());
 
