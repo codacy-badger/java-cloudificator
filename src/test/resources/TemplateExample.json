@@ -3,13 +3,13 @@
   "Description" : "Private DNS zone",
   "Parameters" : {
     "vpcList" : {
-      "Type" : "List<AWS::EC2::VPC::Id>",
-      "Description" : "List of associated VPC Id's"
+      "Description" : "List of associated VPC Id's",
+      "Type" : "List<AWS::EC2::VPC::Id>"
     },
     "dnszone" : {
       "Default" : "eu-central-1.dev.aws.test",
-      "Type" : "String",
-      "Description" : "Private DNS zone name"
+      "Description" : "Private DNS zone name",
+      "Type" : "String"
     }
   },
   "Mappings" : {
@@ -38,8 +38,8 @@
   },
   "Outputs" : {
     "HostedZoneIdOutput" : {
-      "Value" : "!Ref DNSZone",
-      "Description" : "Hosted Zone ID Output"
+      "Description" : "Hosted Zone ID Output",
+      "Value" : "!Ref DNSZone"
     }
   }
 }

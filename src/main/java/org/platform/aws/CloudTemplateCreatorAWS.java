@@ -28,6 +28,7 @@ import org.utils.MainUtils;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -146,6 +147,7 @@ public class CloudTemplateCreatorAWS extends CloudTemplateCreator {
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    objectMapper.setPropertyNamingStrategy(new FirstInitialUpperNamingStrategy());
 	    objectMapper.setSerializationInclusion(Include.NON_NULL);
+	    objectMapper.configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY, true);
 	    this.jsonOutput = objectMapper.writeValueAsString(this);
 	    return jsonOutput;
 	} catch (JsonProcessingException e) {
